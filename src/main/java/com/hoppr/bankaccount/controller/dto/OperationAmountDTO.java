@@ -3,9 +3,6 @@ package com.hoppr.bankaccount.controller.dto;
 import lombok.Getter;
 
 @Getter
-public class AccountOperationDTO {
-
-  private Long id;
-
+public class OperationAmountDTO {
   private Float amount;
 }

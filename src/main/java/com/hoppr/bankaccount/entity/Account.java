@@ -1,6 +1,7 @@
 package com.hoppr.bankaccount.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import lombok.Builder;
 import lombok.Data;
 
@@ -9,7 +10,7 @@ import lombok.Data;
 @Builder
 public class Account {
 
-  private Long id;
+  @Id private Long id;
 
   private Float amount;
 
