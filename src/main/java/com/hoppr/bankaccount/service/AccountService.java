@@ -1,6 +1,8 @@
 package com.hoppr.bankaccount.service;
 
 import com.hoppr.bankaccount.entity.Account;
+import com.hoppr.bankaccount.exception.AccountAlreadyBlockedException;
+import com.hoppr.bankaccount.exception.AccountNotBlockedException;
 import com.hoppr.bankaccount.exception.NotEnoughMoneyException;
 import com.hoppr.bankaccount.repository.AccountRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -30,7 +32,8 @@ public class AccountService {
 
     checkValidAmount(amount);
 
-    account.setAmount(BigDecimal.valueOf(account.getAmount()).subtract(BigDecimal.valueOf(amount)).floatValue());
+    account.setAmount(
+        BigDecimal.valueOf(account.getAmount()).subtract(BigDecimal.valueOf(amount)).floatValue());
 
     return accountRepository.save(account);
   }
@@ -40,16 +43,38 @@ public class AccountService {
 
     checkValidAmount(amount);
 
-    if(amount > account.getAmount()){
+    if (amount > account.getAmount()) {
       throw new NotEnoughMoneyException("Not enough money on the account");
     }
 
     return debitAccount(id, amount);
   }
 
-  void checkValidAmount(Float amount){
+  void checkValidAmount(Float amount) {
     if (amount == null || amount <= 0) {
       throw new IllegalArgumentException("Amount must be positive");
     }
+  }
+
+  public void blockAccount(Long id) {
+    var account = accountRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+
+    if (account.isClosed()) {
+      throw new AccountAlreadyBlockedException("Account already blocked");
+    }
+
+    account.setClosed(true);
+    accountRepository.save(account);
+  }
+
+  public void unblockAccount(Long id) {
+    var account = accountRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+
+    if (!account.isClosed()) {
+      throw new AccountNotBlockedException("Account is not blocked");
+    }
+
+    account.setClosed(false);
+    accountRepository.save(account);
   }
 }
