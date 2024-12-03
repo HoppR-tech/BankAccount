@@ -1,8 +1,9 @@
 package com.hoppr.bankaccount.service;
 
 import com.hoppr.bankaccount.entity.Account;
-import com.hoppr.bankaccount.exception.AccountAlreadyBlockedException;
-import com.hoppr.bankaccount.exception.AccountNotBlockedException;
+import com.hoppr.bankaccount.exception.AccountAlreadyClosedException;
+import com.hoppr.bankaccount.exception.AccountClosedException;
+import com.hoppr.bankaccount.exception.AccountNotClosedException;
 import com.hoppr.bankaccount.exception.NotEnoughMoneyException;
 import com.hoppr.bankaccount.repository.AccountRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -16,9 +17,13 @@ public class AccountService {
 
   private final AccountRepository accountRepository;
 
+  public Account getAccount(Long id) {
+    return accountRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+  }
+
   public Account creditAccount(Long id, Float amount) {
     var account = accountRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-
+    checkClosedAccount(account);
     checkValidAmount(amount);
 
     account.setAmount(
@@ -29,7 +34,7 @@ public class AccountService {
 
   public Account debitAccount(Long id, Float amount) {
     var account = accountRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-
+    checkClosedAccount(account);
     checkValidAmount(amount);
 
     account.setAmount(
@@ -40,7 +45,7 @@ public class AccountService {
 
   public Account withdrawMoney(Long id, Float amount) {
     var account = accountRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-
+    checkClosedAccount(account);
     checkValidAmount(amount);
 
     if (amount > account.getAmount()) {
@@ -56,22 +61,28 @@ public class AccountService {
     }
   }
 
-  public void blockAccount(Long id) {
+  public void closeAccount(Long id) {
     var account = accountRepository.findById(id).orElseThrow(EntityNotFoundException::new);
 
     if (account.isClosed()) {
-      throw new AccountAlreadyBlockedException("Account already blocked");
+      throw new AccountAlreadyClosedException("Account already closed");
     }
 
     account.setClosed(true);
     accountRepository.save(account);
   }
 
-  public void unblockAccount(Long id) {
+  private void checkClosedAccount(Account account) {
+    if (account.isClosed()) {
+      throw new AccountClosedException("Cannot perform operation on closed account");
+    }
+  }
+
+  public void reopenAccount(Long id) {
     var account = accountRepository.findById(id).orElseThrow(EntityNotFoundException::new);
 
     if (!account.isClosed()) {
-      throw new AccountNotBlockedException("Account is not blocked");
+      throw new AccountNotClosedException("Account is not closed");
     }
 
     account.setClosed(false);

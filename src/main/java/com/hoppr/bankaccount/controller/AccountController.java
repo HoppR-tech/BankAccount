@@ -14,7 +14,12 @@ public class AccountController {
 
   private final AccountService accountService;
 
-  @PostMapping("/{accountId}/credit")
+  @GetMapping("/{accountId}")
+  public ResponseEntity<AccountDTO> getAccount(@PathVariable("accountId") Long accountId) {
+    return ResponseEntity.ok().body(AccountDTO.fromEntity(accountService.getAccount(accountId)));
+  }
+
+  @PatchMapping("/{accountId}/credit")
   public ResponseEntity<AccountDTO> creditAccount(
       @PathVariable("accountId") Long accountId,
       @RequestBody OperationAmountDTO operationAmountDTO) {
@@ -24,7 +29,7 @@ public class AccountController {
                 accountService.creditAccount(accountId, operationAmountDTO.getAmount())));
   }
 
-  @PostMapping("/{accountId}/debit")
+  @PatchMapping("/{accountId}/debit")
   public ResponseEntity<AccountDTO> debitAccount(
       @PathVariable("accountId") Long accountId,
       @RequestBody OperationAmountDTO operationAmountDTO) {
@@ -34,7 +39,7 @@ public class AccountController {
                 accountService.debitAccount(accountId, operationAmountDTO.getAmount())));
   }
 
-  @PostMapping("/{accountId}/withdraw")
+  @PatchMapping("/{accountId}/withdraw")
   public ResponseEntity<AccountDTO> withdraw(
       @PathVariable("accountId") Long accountId,
       @RequestBody OperationAmountDTO operationAmountDTO) {
@@ -44,15 +49,15 @@ public class AccountController {
                 accountService.withdrawMoney(accountId, operationAmountDTO.getAmount())));
   }
 
-  @PostMapping("/{accountId}/block")
-  public ResponseEntity<AccountDTO> blockAccount(@PathVariable("accountId") Long accountId) {
-    accountService.blockAccount(accountId);
+  @PatchMapping("/{accountId}/close")
+  public ResponseEntity<AccountDTO> closeAccount(@PathVariable("accountId") Long accountId) {
+    accountService.closeAccount(accountId);
     return ResponseEntity.ok().build();
   }
 
-  @PostMapping("/{accountId}/unblock")
-  public ResponseEntity<AccountDTO> unblockAccount(@PathVariable("accountId") Long accountId) {
-    accountService.unblockAccount(accountId);
+  @PatchMapping("/{accountId}/reopen")
+  public ResponseEntity<AccountDTO> reopenAccount(@PathVariable("accountId") Long accountId) {
+    accountService.reopenAccount(accountId);
     return ResponseEntity.ok().build();
   }
 }

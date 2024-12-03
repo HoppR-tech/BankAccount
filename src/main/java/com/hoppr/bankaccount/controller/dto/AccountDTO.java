@@ -11,8 +11,13 @@ import lombok.Getter;
 public class AccountDTO {
   private Long id;
   private Float amount;
+  private boolean closed;
 
   public static AccountDTO fromEntity(Account account) {
-    return AccountDTO.builder().id(account.getId()).amount(account.getAmount()).build();
+    return AccountDTO.builder()
+        .id(account.getId())
+        .amount(account.getAmount())
+        .closed(account.isClosed())
+        .build();
   }
 }

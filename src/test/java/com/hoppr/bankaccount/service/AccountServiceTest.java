@@ -6,8 +6,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.hoppr.bankaccount.entity.Account;
-import com.hoppr.bankaccount.exception.AccountAlreadyBlockedException;
-import com.hoppr.bankaccount.exception.AccountNotBlockedException;
+import com.hoppr.bankaccount.exception.AccountAlreadyClosedException;
+import com.hoppr.bankaccount.exception.AccountNotClosedException;
 import com.hoppr.bankaccount.exception.NotEnoughMoneyException;
 import com.hoppr.bankaccount.repository.AccountRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -27,6 +27,30 @@ class AccountServiceTest {
   @Mock private AccountRepository accountRepository;
 
   @InjectMocks private AccountService accountService;
+
+  @Nested
+  class Consult {
+    @Test
+    void existingAccountShouldReturnAccount() {
+      // Given
+      var savedAccount = Account.builder().id(1L).amount(5.0f).build();
+      when(accountRepository.findById(1L)).thenReturn(Optional.of(savedAccount));
+
+      // When
+      var accountActual = accountService.getAccount(1L);
+
+      // Then
+      assertThat(accountActual).isEqualTo(savedAccount);
+    }
+
+    @Test
+    void nonExistingAccountShouldThrowException() {
+      when(accountRepository.findById(1L)).thenReturn(Optional.empty());
+
+      assertThatThrownBy(() -> accountService.getAccount(1L))
+          .isInstanceOf(EntityNotFoundException.class);
+    }
+  }
 
   @Nested
   class Credit {
@@ -188,7 +212,7 @@ class AccountServiceTest {
       when(accountRepository.findById(1L)).thenReturn(Optional.of(savedAccount));
 
       // When
-      accountService.blockAccount(1L);
+      accountService.closeAccount(1L);
       verify(accountRepository).save(argumentCaptor.capture());
 
       // Then
@@ -200,8 +224,8 @@ class AccountServiceTest {
       var savedAccount = Account.builder().id(1L).amount(5.0f).closed(true).build();
       when(accountRepository.findById(1L)).thenReturn(Optional.of(savedAccount));
 
-      assertThatThrownBy(() -> accountService.blockAccount(1L))
-          .isInstanceOf(AccountAlreadyBlockedException.class);
+      assertThatThrownBy(() -> accountService.closeAccount(1L))
+          .isInstanceOf(AccountAlreadyClosedException.class);
     }
 
     @Test
@@ -212,7 +236,7 @@ class AccountServiceTest {
       when(accountRepository.findById(1L)).thenReturn(Optional.of(savedAccount));
 
       // When
-      accountService.unblockAccount(1L);
+      accountService.reopenAccount(1L);
       verify(accountRepository).save(argumentCaptor.capture());
 
       // Then
@@ -224,8 +248,8 @@ class AccountServiceTest {
       var savedAccount = Account.builder().id(1L).amount(5.0f).closed(false).build();
       when(accountRepository.findById(1L)).thenReturn(Optional.of(savedAccount));
 
-      assertThatThrownBy(() -> accountService.unblockAccount(1L))
-          .isInstanceOf(AccountNotBlockedException.class);
+      assertThatThrownBy(() -> accountService.reopenAccount(1L))
+          .isInstanceOf(AccountNotClosedException.class);
     }
   }
 }

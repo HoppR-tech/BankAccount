@@ -2,7 +2,7 @@ spring:
   application:
     name: bankaccount
   datasource:
-    url: jdbc:postgresql://localhost:5435/postgres
+    url: jdbc:postgresql://localhost:5332/postgres
     username: postgres
     password: password
   jpa:
@@ -10,3 +10,10 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+  flyway:
+    enabled: true
+    url: jdbc:postgresql://localhost:5332/postgres
+    user: postgres
+    password: password
+    locations: classpath:db/migration
+    baselineOnMigrate: true
