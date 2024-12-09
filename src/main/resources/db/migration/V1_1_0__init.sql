@@ -6,6 +6,9 @@ CREATE TABLE account (
 
 insert into account (amount, closed) values (100.5, false);
 insert into account (amount, closed) values (-10.2, false);
-insert into account (amount, closed) values (-1230, true);
-insert into account (amount, closed) values (200.5, true);
+insert into account (amount, closed) values (200.5, false);
+insert into account (amount, closed) values (-1000, false);
 insert into account (amount, closed) values (100.5, false);
+insert into account (amount, closed) values (-1230, true);
+insert into account (amount, closed) values (100.5, false);
+insert into account (amount, closed) values (-10.2, true);

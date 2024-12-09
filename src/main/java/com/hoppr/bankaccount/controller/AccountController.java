@@ -19,7 +19,7 @@ public class AccountController {
     return ResponseEntity.ok().body(AccountDTO.fromEntity(accountService.getAccount(accountId)));
   }
 
-  @PatchMapping("/{accountId}/credit")
+  @PatchMapping(value = "/{accountId}/credit", consumes = "application/json")
   public ResponseEntity<AccountDTO> creditAccount(
       @PathVariable("accountId") Long accountId,
       @RequestBody OperationAmountDTO operationAmountDTO) {
@@ -29,7 +29,7 @@ public class AccountController {
                 accountService.creditAccount(accountId, operationAmountDTO.getAmount())));
   }
 
-  @PatchMapping("/{accountId}/debit")
+  @PatchMapping(value = "/{accountId}/debit", consumes = "application/json")
   public ResponseEntity<AccountDTO> debitAccount(
       @PathVariable("accountId") Long accountId,
       @RequestBody OperationAmountDTO operationAmountDTO) {
@@ -39,7 +39,7 @@ public class AccountController {
                 accountService.debitAccount(accountId, operationAmountDTO.getAmount())));
   }
 
-  @PatchMapping("/{accountId}/withdraw")
+  @PatchMapping(value = "/{accountId}/withdraw", consumes = "application/json")
   public ResponseEntity<AccountDTO> withdraw(
       @PathVariable("accountId") Long accountId,
       @RequestBody OperationAmountDTO operationAmountDTO) {
@@ -49,13 +49,13 @@ public class AccountController {
                 accountService.withdrawMoney(accountId, operationAmountDTO.getAmount())));
   }
 
-  @PatchMapping("/{accountId}/close")
+  @PatchMapping(value = "/{accountId}/close")
   public ResponseEntity<AccountDTO> closeAccount(@PathVariable("accountId") Long accountId) {
     accountService.closeAccount(accountId);
     return ResponseEntity.ok().build();
   }
 
-  @PatchMapping("/{accountId}/reopen")
+  @PatchMapping(value = "/{accountId}/reopen")
   public ResponseEntity<AccountDTO> reopenAccount(@PathVariable("accountId") Long accountId) {
     accountService.reopenAccount(accountId);
     return ResponseEntity.ok().build();
