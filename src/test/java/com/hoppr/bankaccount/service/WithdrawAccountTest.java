@@ -36,7 +36,7 @@ public class WithdrawAccountTest {
         when(accountRepository.save(Mockito.any())).thenReturn(savedAccount);
 
         // When
-        var accountAfterOperationActual = useCase.withdrawMoney(1L, 3.0f);
+        var accountAfterOperationActual = useCase.accept(1L, 3.0f);
 
         // Then
         assertThat(accountAfterOperationActual).isEqualTo(accountAfterOperationExpected);
@@ -48,7 +48,7 @@ public class WithdrawAccountTest {
 
         when(accountRepository.findById(1L)).thenReturn(Optional.of(savedAccount));
 
-        assertThatThrownBy(() -> useCase.withdrawMoney(1L, 6.0f))
+        assertThatThrownBy(() -> useCase.accept(1L, 6.0f))
                 .isInstanceOf(NotEnoughMoney.class);
     }
 
@@ -57,7 +57,7 @@ public class WithdrawAccountTest {
         var savedAccount = Account.builder().id(1L).amount(5.0f).build();
         when(accountRepository.findById(1L)).thenReturn(Optional.of(savedAccount));
 
-        assertThatThrownBy(() -> useCase.withdrawMoney(1L, -1f))
+        assertThatThrownBy(() -> useCase.accept(1L, -1f))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Amount must be positive");
     }
@@ -67,7 +67,7 @@ public class WithdrawAccountTest {
         var savedAccount = Account.builder().id(1L).amount(5.0f).build();
         when(accountRepository.findById(1L)).thenReturn(Optional.of(savedAccount));
 
-        assertThatThrownBy(() -> useCase.withdrawMoney(1L, null))
+        assertThatThrownBy(() -> useCase.accept(1L, null))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Amount must be positive");
     }
@@ -76,7 +76,7 @@ public class WithdrawAccountTest {
     void withdrawOfNonExistingAccountShouldThrowException() {
         when(accountRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> useCase.withdrawMoney(1L, 3.0f))
+        assertThatThrownBy(() -> useCase.accept(1L, 3.0f))
                 .isInstanceOf(EntityNotFoundException.class);
     }
 }

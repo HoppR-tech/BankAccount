@@ -1,6 +1,5 @@
 package com.hoppr.bankaccount.service;
 
-import com.hoppr.bankaccount.exception.AccountIsNotClosed;
 import com.hoppr.bankaccount.repository.AccountRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -12,12 +11,7 @@ public class ReopenAccountUseCase {
 
     public void accept(Long id) {
         var account = accountRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-
-        if (!account.isClosed()) {
-            throw new AccountIsNotClosed("Account is not closed");
-        }
-
-        account.setClosed(false);
+        account.reOpen();
         accountRepository.save(account);
     }
 
