@@ -1,15 +1,6 @@
 package com.hoppr.bankaccount.service;
 
 import com.hoppr.bankaccount.entity.Account;
-import com.hoppr.bankaccount.exception.AccountIsAlreadyClosed;
-import com.hoppr.bankaccount.exception.AccountIsClosed;
-import com.hoppr.bankaccount.exception.AccountIsNotClosed;
-import com.hoppr.bankaccount.exception.NotEnoughMoney;
-import com.hoppr.bankaccount.repository.AccountRepository;
-import jakarta.persistence.EntityNotFoundException;
-
-import java.math.BigDecimal;
-
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,83 +8,40 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class AccountService {
 
-    private final AccountRepository accountRepository;
+    private final ConsultAccountUseCase consultAccountUseCase;
+    private final CreditAccountUseCase creditAccountUseCase;
+    private final DebitAccountUseCase debitAccountUseCase;
+    private final WithdrawUseCase withdrawUseCase;
+    private final CloseAccountUseCase closeAccountUseCase;
+    private final ReopenAccountUseCase reopenAccountUseCase;
 
     @Deprecated
     public Account getAccount(Long id) {
-        return accountRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        return consultAccountUseCase.getAccount(id);
     }
 
     @Deprecated
     public Account creditAccount(Long id, Float amount) {
-        var account = accountRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-        checkClosedAccount(account);
-        checkValidAmount(amount);
-
-        account.setAmount(
-                BigDecimal.valueOf(amount).add(BigDecimal.valueOf(account.getAmount())).floatValue());
-
-        return accountRepository.save(account);
+        return creditAccountUseCase.accept(id, amount);
     }
 
     @Deprecated
     public Account debitAccount(Long id, Float amount) {
-        var account = accountRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-        checkClosedAccount(account);
-        checkValidAmount(amount);
-
-        account.setAmount(
-                BigDecimal.valueOf(account.getAmount()).subtract(BigDecimal.valueOf(amount)).floatValue());
-
-        return accountRepository.save(account);
+        return debitAccountUseCase.accept(id, amount);
     }
 
     @Deprecated
     public Account withdrawMoney(Long id, Float amount) {
-        var account = accountRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-        checkClosedAccount(account);
-        checkValidAmount(amount);
-
-        if (amount > account.getAmount()) {
-            throw new NotEnoughMoney("Not enough money on the account");
-        }
-
-        return debitAccount(id, amount);
-    }
-
-    void checkValidAmount(Float amount) {
-        if (amount == null || amount <= 0) {
-            throw new IllegalArgumentException("Amount must be positive");
-        }
+        return withdrawUseCase.accept(id, amount);
     }
 
     @Deprecated
     public void closeAccount(Long id) {
-        var account = accountRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-
-        if (account.isClosed()) {
-            throw new AccountIsAlreadyClosed("Account already closed");
-        }
-
-        account.setClosed(true);
-        accountRepository.save(account);
-    }
-
-    private void checkClosedAccount(Account account) {
-        if (account.isClosed()) {
-            throw new AccountIsClosed("Cannot perform operation on closed account");
-        }
+        closeAccountUseCase.accept(id);
     }
 
     @Deprecated
     public void reopenAccount(Long id) {
-        var account = accountRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-
-        if (!account.isClosed()) {
-            throw new AccountIsNotClosed("Account is not closed");
-        }
-
-        account.setClosed(false);
-        accountRepository.save(account);
+        reopenAccountUseCase.accept(id);
     }
 }

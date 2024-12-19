@@ -28,11 +28,11 @@ class CloseAccountTest {
 
     @Test
     void account_is_already_closed() {
-        when(accountRepository.findById(1L))
-                .thenReturn(Optional.of(Account.builder()
+        when(accountRepository.get(1L))
+                .thenReturn(Account.builder()
                         .id(1L)
                         .closed(true)
-                        .build()));
+                        .build());
 
         assertThatExceptionOfType(AccountIsAlreadyClosed.class)
                 .isThrownBy(() -> useCase.accept(1L))
@@ -41,11 +41,11 @@ class CloseAccountTest {
 
     @Test
     void close_account() {
-        when(accountRepository.findById(1L))
-                .thenReturn(Optional.of(Account.builder()
+        when(accountRepository.get(1L))
+                .thenReturn(Account.builder()
                         .id(1L)
                         .closed(false)
-                        .build()));
+                        .build());
 
         useCase.accept(1L);
 

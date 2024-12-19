@@ -2,15 +2,12 @@ package com.hoppr.bankaccount.service;
 
 import com.hoppr.bankaccount.entity.Account;
 import com.hoppr.bankaccount.repository.AccountRepository;
-import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -31,7 +28,7 @@ public class DebitAccountTest {
         var accountAfterOperationExpected = Account.builder().id(1L).amount(2.0f).build();
         var savedAccount = Account.builder().id(1L).amount(5.0f).build();
 
-        when(accountRepository.findById(1L)).thenReturn(Optional.of(savedAccount));
+        when(accountRepository.get(1L)).thenReturn(savedAccount);
         when(accountRepository.save(Mockito.any())).thenReturn(savedAccount);
 
         // When
@@ -44,7 +41,7 @@ public class DebitAccountTest {
     @Test
     void debitAccountByNegativeNumberShouldThrowException() {
         var savedAccount = Account.builder().id(1L).amount(5.0f).build();
-        when(accountRepository.findById(1L)).thenReturn(Optional.of(savedAccount));
+        when(accountRepository.get(1L)).thenReturn(savedAccount);
 
         assertThatThrownBy(() -> useCase.accept(1L, -1f))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -54,18 +51,11 @@ public class DebitAccountTest {
     @Test
     void debitAccountByNullValueShouldThrowException() {
         var savedAccount = Account.builder().id(1L).amount(5.0f).build();
-        when(accountRepository.findById(1L)).thenReturn(Optional.of(savedAccount));
+        when(accountRepository.get(1L)).thenReturn(savedAccount);
 
         assertThatThrownBy(() -> useCase.accept(1L, null))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("value cannot be null");
     }
 
-    @Test
-    void debitAccountOfNonExistingAccountShouldThrowException() {
-        when(accountRepository.findById(1L)).thenReturn(Optional.empty());
-
-        assertThatThrownBy(() -> useCase.accept(1L, 3.0f))
-                .isInstanceOf(EntityNotFoundException.class);
-    }
 }

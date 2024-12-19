@@ -10,8 +10,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Optional;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.verify;
@@ -28,11 +26,11 @@ class ReopenAccountTest {
 
     @Test
     void account_is_not_closed_yet() {
-        when(accountRepository.findById(1L))
-                .thenReturn(Optional.of(Account.builder()
+        when(accountRepository.get(1L))
+                .thenReturn(Account.builder()
                         .id(1L)
                         .closed(false)
-                        .build()));
+                        .build());
 
         assertThatExceptionOfType(AccountIsNotClosed.class)
                 .isThrownBy(() -> useCase.accept(1L))
@@ -41,11 +39,11 @@ class ReopenAccountTest {
 
     @Test
     void account_is_reopened() {
-        when(accountRepository.findById(1L))
-                .thenReturn(Optional.of(Account.builder()
+        when(accountRepository.get(1L))
+                .thenReturn(Account.builder()
                         .id(1L)
                         .closed(true)
-                        .build()));
+                        .build());
 
         useCase.accept(1L);
 
