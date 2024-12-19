@@ -1,7 +1,7 @@
 package com.hoppr.bankaccount.service;
 
 import com.hoppr.bankaccount.entity.Account;
-import com.hoppr.bankaccount.exception.NotEnoughMoneyException;
+import com.hoppr.bankaccount.exception.NotEnoughMoney;
 import com.hoppr.bankaccount.repository.AccountRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
@@ -49,7 +49,7 @@ public class WithdrawAccountTest {
         when(accountRepository.findById(1L)).thenReturn(Optional.of(savedAccount));
 
         assertThatThrownBy(() -> useCase.withdrawMoney(1L, 6.0f))
-                .isInstanceOf(NotEnoughMoneyException.class);
+                .isInstanceOf(NotEnoughMoney.class);
     }
 
     @Test

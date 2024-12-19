@@ -1,8 +1,8 @@
 package com.hoppr.bankaccount.service;
 
 import com.hoppr.bankaccount.entity.Account;
-import com.hoppr.bankaccount.exception.AccountAlreadyClosedException;
-import com.hoppr.bankaccount.exception.AccountNotClosedException;
+import com.hoppr.bankaccount.exception.AccountIsAlreadyClosed;
+import com.hoppr.bankaccount.exception.AccountIsNotClosed;
 import com.hoppr.bankaccount.repository.AccountRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -48,7 +48,7 @@ public class BlockAccountTest {
         when(accountRepository.findById(1L)).thenReturn(Optional.of(savedAccount));
 
         assertThatThrownBy(() -> accountService.closeAccount(1L))
-                .isInstanceOf(AccountAlreadyClosedException.class);
+                .isInstanceOf(AccountIsAlreadyClosed.class);
     }
 
     @Test
@@ -72,6 +72,6 @@ public class BlockAccountTest {
         when(accountRepository.findById(1L)).thenReturn(Optional.of(savedAccount));
 
         assertThatThrownBy(() -> accountService.reopenAccount(1L))
-                .isInstanceOf(AccountNotClosedException.class);
+                .isInstanceOf(AccountIsNotClosed.class);
     }
 }

@@ -1,10 +1,10 @@
 package com.hoppr.bankaccount.service;
 
 import com.hoppr.bankaccount.entity.Account;
-import com.hoppr.bankaccount.exception.AccountAlreadyClosedException;
-import com.hoppr.bankaccount.exception.AccountClosedException;
-import com.hoppr.bankaccount.exception.AccountNotClosedException;
-import com.hoppr.bankaccount.exception.NotEnoughMoneyException;
+import com.hoppr.bankaccount.exception.AccountIsAlreadyClosed;
+import com.hoppr.bankaccount.exception.AccountIsClosed;
+import com.hoppr.bankaccount.exception.AccountIsNotClosed;
+import com.hoppr.bankaccount.exception.NotEnoughMoney;
 import com.hoppr.bankaccount.repository.AccountRepository;
 import jakarta.persistence.EntityNotFoundException;
 
@@ -55,7 +55,7 @@ public class AccountService {
         checkValidAmount(amount);
 
         if (amount > account.getAmount()) {
-            throw new NotEnoughMoneyException("Not enough money on the account");
+            throw new NotEnoughMoney("Not enough money on the account");
         }
 
         return debitAccount(id, amount);
@@ -72,7 +72,7 @@ public class AccountService {
         var account = accountRepository.findById(id).orElseThrow(EntityNotFoundException::new);
 
         if (account.isClosed()) {
-            throw new AccountAlreadyClosedException("Account already closed");
+            throw new AccountIsAlreadyClosed("Account already closed");
         }
 
         account.setClosed(true);
@@ -81,7 +81,7 @@ public class AccountService {
 
     private void checkClosedAccount(Account account) {
         if (account.isClosed()) {
-            throw new AccountClosedException("Cannot perform operation on closed account");
+            throw new AccountIsClosed("Cannot perform operation on closed account");
         }
     }
 
@@ -90,7 +90,7 @@ public class AccountService {
         var account = accountRepository.findById(id).orElseThrow(EntityNotFoundException::new);
 
         if (!account.isClosed()) {
-            throw new AccountNotClosedException("Account is not closed");
+            throw new AccountIsNotClosed("Account is not closed");
         }
 
         account.setClosed(false);
