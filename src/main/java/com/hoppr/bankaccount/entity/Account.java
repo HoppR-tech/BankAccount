@@ -4,24 +4,21 @@ import com.hoppr.bankaccount.exception.AccountIsAlreadyClosed;
 import com.hoppr.bankaccount.exception.AccountIsClosed;
 import com.hoppr.bankaccount.exception.AccountIsNotClosed;
 import com.hoppr.bankaccount.exception.NotEnoughMoney;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
+import lombok.experimental.Accessors;
 
-@Entity
-@Data
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@Accessors(fluent = true)
+@Getter
+@EqualsAndHashCode
+@ToString
 public class Account {
 
-  @Id private Long id;
-
+  private Long id;
   private Float amount;
-
   private boolean closed;
 
   public void reOpen() {

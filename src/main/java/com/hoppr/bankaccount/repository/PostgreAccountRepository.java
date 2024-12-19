@@ -14,11 +14,22 @@ public class PostgreAccountRepository implements AccountRepository {
     @Override
     public Account get(Long id) {
         return jpaAccounts.findById(id)
+                .map(this::toAccount)
                 .orElseThrow(EntityNotFoundException::new);
+    }
+
+    private Account toAccount(JpaAccount jpaAccount) {
+        return Account.builder()
+                .id(jpaAccount.getId())
+                .amount(jpaAccount.getAmount())
+                .closed(jpaAccount.isClosed())
+                .build();
     }
 
     @Override
     public Account save(Account account) {
-        return jpaAccounts.save(account);
+        JpaAccount entity = JpaAccount.from(account);
+        JpaAccount persisted = jpaAccounts.save(entity);
+        return toAccount(persisted);
     }
 }

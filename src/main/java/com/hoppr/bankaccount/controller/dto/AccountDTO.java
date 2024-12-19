@@ -16,9 +16,9 @@ public class AccountDTO implements Serializable {
 
   public static AccountDTO fromEntity(Account account) {
     return AccountDTO.builder()
-        .id(account.getId())
-        .amount(account.getAmount())
-        .closed(account.isClosed())
+        .id(account.id())
+        .amount(account.amount())
+        .closed(account.closed())
         .build();
   }
 }
