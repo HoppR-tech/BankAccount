@@ -14,7 +14,7 @@ public record Amount(Float value) {
         return value > 0;
     }
 
-    public Amount substract(Amount other) {
+    public Amount subtract(Amount other) {
         BigDecimal result = BigDecimal.valueOf(this.value).subtract(BigDecimal.valueOf(other.value));
         return new Amount(result.floatValue());
     }

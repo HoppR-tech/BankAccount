@@ -25,17 +25,19 @@ public class BlockAccountTest {
     private AccountRepository accountRepository;
 
     @InjectMocks
-    private AccountService accountService;
+    private CloseAccountUseCase closeAccountUseCase;
+    @InjectMocks
+    private ReopenAccountUseCase reopenAccountUseCase;
 
     @Test
     void unblockedAccountShouldBeBlocked() {
         // Given
         var argumentCaptor = ArgumentCaptor.forClass(Account.class);
         var savedAccount = Account.builder().id(1L).amount(5.0f).build();
-        when(accountRepository.findById(1L)).thenReturn(Optional.of(savedAccount));
+        when(accountRepository.get(1L)).thenReturn(savedAccount);
 
         // When
-        accountService.closeAccount(1L);
+        closeAccountUseCase.accept(1L);
         verify(accountRepository).save(argumentCaptor.capture());
 
         // Then
@@ -45,9 +47,9 @@ public class BlockAccountTest {
     @Test
     void blockAccountWhenAlreadyBlockedShouldThrowException() {
         var savedAccount = Account.builder().id(1L).amount(5.0f).closed(true).build();
-        when(accountRepository.findById(1L)).thenReturn(Optional.of(savedAccount));
+        when(accountRepository.get(1L)).thenReturn(savedAccount);
 
-        assertThatThrownBy(() -> accountService.closeAccount(1L))
+        assertThatThrownBy(() -> closeAccountUseCase.accept(1L))
                 .isInstanceOf(AccountIsAlreadyClosed.class);
     }
 
@@ -56,10 +58,10 @@ public class BlockAccountTest {
         // Given
         var argumentCaptor = ArgumentCaptor.forClass(Account.class);
         var savedAccount = Account.builder().id(1L).amount(5.0f).closed(true).build();
-        when(accountRepository.findById(1L)).thenReturn(Optional.of(savedAccount));
+        when(accountRepository.get(1L)).thenReturn(savedAccount);
 
         // When
-        accountService.reopenAccount(1L);
+        reopenAccountUseCase.accept(1L);
         verify(accountRepository).save(argumentCaptor.capture());
 
         // Then
@@ -69,9 +71,9 @@ public class BlockAccountTest {
     @Test
     void unblockAccountWhenAlreadyUnblockedShouldThrowException() {
         var savedAccount = Account.builder().id(1L).amount(5.0f).closed(false).build();
-        when(accountRepository.findById(1L)).thenReturn(Optional.of(savedAccount));
+        when(accountRepository.get(1L)).thenReturn(savedAccount);
 
-        assertThatThrownBy(() -> accountService.reopenAccount(1L))
+        assertThatThrownBy(() -> reopenAccountUseCase.accept(1L))
                 .isInstanceOf(AccountIsNotClosed.class);
     }
 }

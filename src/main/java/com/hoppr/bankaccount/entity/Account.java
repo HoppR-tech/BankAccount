@@ -49,7 +49,7 @@ public class Account {
     checkClosedAccount();
     amountMustBePositive(amount);
 
-    this.amount = Amount.of(this.amount).substract(amount).value();
+    this.amount = Amount.of(this.amount).subtract(amount).value();
   }
 
   public void withdraw(Amount amount) {
@@ -60,7 +60,7 @@ public class Account {
       throw new NotEnoughMoney("Not enough money on the account");
     }
 
-    this.amount = Amount.of(this.amount).substract(amount).value();
+    this.amount = Amount.of(this.amount).subtract(amount).value();
   }
 
   private void checkClosedAccount() {
