@@ -17,10 +17,12 @@ public class AccountService {
 
   private final AccountRepository accountRepository;
 
+  @Deprecated
   public Account getAccount(Long id) {
     return accountRepository.findById(id).orElseThrow(EntityNotFoundException::new);
   }
 
+  @Deprecated
   public Account creditAccount(Long id, Float amount) {
     var account = accountRepository.findById(id).orElseThrow(EntityNotFoundException::new);
     checkClosedAccount(account);
@@ -32,6 +34,7 @@ public class AccountService {
     return accountRepository.save(account);
   }
 
+  @Deprecated
   public Account debitAccount(Long id, Float amount) {
     var account = accountRepository.findById(id).orElseThrow(EntityNotFoundException::new);
     checkClosedAccount(account);
@@ -43,6 +46,7 @@ public class AccountService {
     return accountRepository.save(account);
   }
 
+  @Deprecated
   public Account withdrawMoney(Long id, Float amount) {
     var account = accountRepository.findById(id).orElseThrow(EntityNotFoundException::new);
     checkClosedAccount(account);
