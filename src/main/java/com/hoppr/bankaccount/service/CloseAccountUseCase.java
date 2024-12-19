@@ -1,6 +1,6 @@
 package com.hoppr.bankaccount.service;
 
-import com.hoppr.bankaccount.exception.AccountAlreadyClosedException;
+import com.hoppr.bankaccount.exception.AccountIsAlreadyClosed;
 import com.hoppr.bankaccount.repository.AccountRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +14,7 @@ public class CloseAccountUseCase {
         var account = accountRepository.findById(id).orElseThrow(EntityNotFoundException::new);
 
         if (account.isClosed()) {
-            throw new AccountAlreadyClosedException("Account already closed");
+            throw new AccountIsAlreadyClosed("Account already closed");
         }
 
         account.setClosed(true);

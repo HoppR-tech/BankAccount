@@ -1,7 +1,7 @@
 package com.hoppr.bankaccount.service;
 
 import com.hoppr.bankaccount.entity.Account;
-import com.hoppr.bankaccount.exception.AccountNotClosedException;
+import com.hoppr.bankaccount.exception.AccountIsNotClosed;
 import com.hoppr.bankaccount.repository.AccountRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,7 +34,7 @@ class ReopenAccountTest {
                         .closed(false)
                         .build()));
 
-        assertThatExceptionOfType(AccountNotClosedException.class)
+        assertThatExceptionOfType(AccountIsNotClosed.class)
                 .isThrownBy(() -> useCase.accept(1L))
                 .withMessage("Account is not closed");
     }

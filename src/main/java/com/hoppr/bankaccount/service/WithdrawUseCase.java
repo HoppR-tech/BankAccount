@@ -1,8 +1,8 @@
 package com.hoppr.bankaccount.service;
 
 import com.hoppr.bankaccount.entity.Account;
-import com.hoppr.bankaccount.exception.AccountClosedException;
-import com.hoppr.bankaccount.exception.NotEnoughMoneyException;
+import com.hoppr.bankaccount.exception.AccountIsClosed;
+import com.hoppr.bankaccount.exception.NotEnoughMoney;
 import com.hoppr.bankaccount.repository.AccountRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ public class WithdrawUseCase {
         checkValidAmount(amount);
 
         if (amount > account.getAmount()) {
-            throw new NotEnoughMoneyException("Not enough money on the account");
+            throw new NotEnoughMoney("Not enough money on the account");
         }
 
         return debitAccount(id, amount);
@@ -39,7 +39,7 @@ public class WithdrawUseCase {
 
     private void checkClosedAccount(Account account) {
         if (account.isClosed()) {
-            throw new AccountClosedException("Cannot perform operation on closed account");
+            throw new AccountIsClosed("Cannot perform operation on closed account");
         }
     }
 

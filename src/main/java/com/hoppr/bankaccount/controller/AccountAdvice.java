@@ -1,9 +1,9 @@
 package com.hoppr.bankaccount.controller;
 
-import com.hoppr.bankaccount.exception.AccountAlreadyClosedException;
-import com.hoppr.bankaccount.exception.AccountClosedException;
-import com.hoppr.bankaccount.exception.AccountNotClosedException;
-import com.hoppr.bankaccount.exception.NotEnoughMoneyException;
+import com.hoppr.bankaccount.exception.AccountIsAlreadyClosed;
+import com.hoppr.bankaccount.exception.AccountIsClosed;
+import com.hoppr.bankaccount.exception.AccountIsNotClosed;
+import com.hoppr.bankaccount.exception.NotEnoughMoney;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,11 +16,11 @@ public class AccountAdvice extends ResponseEntityExceptionHandler {
 
   @ExceptionHandler(
       value = {
-        AccountAlreadyClosedException.class,
-        AccountNotClosedException.class,
-        NotEnoughMoneyException.class,
+        AccountIsAlreadyClosed.class,
+        AccountIsNotClosed.class,
+        NotEnoughMoney.class,
         IllegalArgumentException.class,
-        AccountClosedException.class
+        AccountIsClosed.class
       })
   public ResponseEntity<BusinessError> handleBusinessErrors(RuntimeException ex) {
 

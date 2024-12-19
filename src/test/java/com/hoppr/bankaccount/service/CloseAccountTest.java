@@ -1,7 +1,7 @@
 package com.hoppr.bankaccount.service;
 
 import com.hoppr.bankaccount.entity.Account;
-import com.hoppr.bankaccount.exception.AccountAlreadyClosedException;
+import com.hoppr.bankaccount.exception.AccountIsAlreadyClosed;
 import com.hoppr.bankaccount.repository.AccountRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,7 +34,7 @@ class CloseAccountTest {
                         .closed(true)
                         .build()));
 
-        assertThatExceptionOfType(AccountAlreadyClosedException.class)
+        assertThatExceptionOfType(AccountIsAlreadyClosed.class)
                 .isThrownBy(() -> useCase.accept(1L))
                 .withMessage("Account already closed");
     }
