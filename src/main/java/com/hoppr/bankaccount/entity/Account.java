@@ -11,8 +11,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
-
 @Entity
 @Data
 @Builder
@@ -40,32 +38,29 @@ public class Account {
     closed = true;
   }
 
-  public void credit(Float amount) {
+  public void credit(Amount amount) {
     checkClosedAccount();
-    checkValidAmount(amount);
+    amountMustBePositive(amount);
 
-    this.amount = BigDecimal.valueOf(amount)
-            .add(BigDecimal.valueOf(this.amount)).floatValue();
+    this.amount = amount.add(Amount.of(this.amount)).value();
   }
 
-  public void debit(Float amount) {
+  public void debit(Amount amount) {
     checkClosedAccount();
-    checkValidAmount(amount);
+    amountMustBePositive(amount);
 
-    this.amount = BigDecimal.valueOf(this.getAmount())
-            .subtract(BigDecimal.valueOf(amount)).floatValue();
+    this.amount = Amount.of(this.amount).substract(amount).value();
   }
 
-  public void withdraw(Float amount) {
+  public void withdraw(Amount amount) {
     checkClosedAccount();
-    checkValidAmount(amount);
+    amountMustBePositive(amount);
 
-    if (amount > this.amount) {
+    if (amount.greaterThan(Amount.of(this.amount))) {
       throw new NotEnoughMoney("Not enough money on the account");
     }
 
-    this.amount = BigDecimal.valueOf(this.getAmount())
-            .subtract(BigDecimal.valueOf(amount)).floatValue();
+    this.amount = Amount.of(this.amount).substract(amount).value();
   }
 
   private void checkClosedAccount() {
@@ -74,8 +69,8 @@ public class Account {
     }
   }
 
-  void checkValidAmount(Float amount) {
-    if (amount == null || amount <= 0) {
+  void amountMustBePositive(Amount amount) {
+    if (!amount.isPositive()) {
       throw new IllegalArgumentException("Amount must be positive");
     }
   }

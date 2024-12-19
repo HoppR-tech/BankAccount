@@ -47,7 +47,7 @@ public class CreditAccountTest {
 
         assertThatThrownBy(() -> useCase.accept(1L, null))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Amount must be positive");
+                .hasMessage("value cannot be null");
     }
 
     @Test
