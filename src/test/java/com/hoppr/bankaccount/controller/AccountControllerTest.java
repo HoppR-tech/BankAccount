@@ -15,14 +15,14 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.postgresql.PostgreSQLContainer;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 class AccountControllerTest {
   @Autowired private MockMvc mockMvc;
 
-  static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres");
+  static PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:17");
 
   @BeforeAll
   static void beforeAll() {
